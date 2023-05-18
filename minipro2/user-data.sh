@@ -241,5 +241,3 @@ function TableExists(\$tableName, \$connection, \$dbName) {
 ?>
 EOF
 
-# PHP 실행
-php sample_page.php
