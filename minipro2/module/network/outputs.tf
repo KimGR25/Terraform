@@ -21,6 +21,6 @@ output "mini-alb-sg_ids" {
 output "mini-app-sg_ids" {
   value = aws_security_group.mini-app-sg.*.id
 }
-output "mini-rbs-sg_ids" {
-  value = aws_security_group.mini-rbs-sg.*.id
+output "mini-rds-sg_ids" {
+  value = aws_security_group.mini-rds-sg.*.id
 }

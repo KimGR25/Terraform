@@ -1,8 +1,10 @@
+
 resource "aws_launch_template" "bastion" {
   name_prefix            = "bastion"
   instance_type          = "t2.micro"
-  image_id               = "ami-03f54df9441e9b380"
+  image_id               = "ami-035da6a0773842f64"
   vpc_security_group_ids = var.bastion_security_group_ids
+  key_name               = "mykeypair"
 
   tags = merge(
     var.tags,
@@ -12,11 +14,18 @@ resource "aws_launch_template" "bastion" {
   )
 }
 
+
+
 resource "aws_launch_template" "app" {
   name_prefix            = "app"
   instance_type          = "t2.micro"
-  image_id               = "ami-03f54df9441e9b380"
+  image_id               = "ami-035da6a0773842f64"
   vpc_security_group_ids = var.app_security_group_ids
+  key_name               = "mykeypair"
+  
+  user_data = base64encode(templatefile("user-data.sh", {
+  db_address = var.rds_endpoint
+}))
 
   tags = merge(
     var.tags,
@@ -56,3 +65,4 @@ resource "aws_autoscaling_attachment" "asg_app_attach" {
   autoscaling_group_name = aws_autoscaling_group.asg_app.id
   lb_target_group_arn    = aws_lb_target_group.alb-tg.arn
 }
+

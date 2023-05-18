@@ -91,8 +91,8 @@ resource "aws_security_group" "mini-app-sg" {
   }
 }
 
-resource "aws_security_group" "mini-rbs-sg" {
-  name = "minipro2-rbs-sg"
+resource "aws_security_group" "mini-rds-sg" {
+  name = "minipro2-rds-sg"
   description = "Allow Database Port Traffic"
   vpc_id = aws_vpc.minipro2.id
 
@@ -111,6 +111,6 @@ resource "aws_security_group" "mini-rbs-sg" {
   }
 
   tags = {
-     Name = "minipro2-rbs-sg"
+     Name = "minipro2-rds-sg"
   }
 }

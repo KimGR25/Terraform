@@ -22,6 +22,11 @@ resource "aws_route_table_association" "mini-public-route-table-assoc" {
 
 resource "aws_route_table" "mini-private-route-table" {
   vpc_id = aws_vpc.minipro2.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id    = aws_nat_gateway.nat_gateway.id
+  }
   
   tags = merge(
     var.tags,
@@ -32,7 +37,7 @@ resource "aws_route_table" "mini-private-route-table" {
 }
 
 resource "aws_route_table_association" "mini-private-route-table-assoc" {
-  count          = 2
-  subnet_id      = aws_subnet.mini-private_subnets.*.id[count.index]
-  route_table_id = aws_route_table.mini-private-route-table.id
+  count             = 2
+  subnet_id         = aws_subnet.mini-private_subnets.*.id[count.index]
+  route_table_id    = aws_route_table.mini-private-route-table.id
 }

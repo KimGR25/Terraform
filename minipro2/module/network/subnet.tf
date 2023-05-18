@@ -46,5 +46,5 @@ resource "aws_subnet" "mini-subnet-data" {
 data "aws_availability_zones" "availability_zones" {
   state = "available"
 
-  exclude_names = ["ap-northeast-2a", "ap-northeast-2c"]
+  exclude_names = ["ap-northeast-2b", "ap-northeast-2d"]
 }
