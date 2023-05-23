@@ -2,17 +2,23 @@
 
 rds_address=${db_address}
 
+# 필요한 패키지들 설치
 sudo yum update -y
 sudo yum install -y libjpeg* libpng* freetype* gd-* gcc gcc-c++ gdbm-devel
 sudo yum install -y httpd*
 sudo yum install -y php php-common php-opcache php-cli php-gd php-curl php-mysqlnd php-mysqli
 
+# 웹서버 실행
 sudo systemctl enable httpd
 sudo systemctl start httpd
 
+# 간단한 웹서버 페이지 생성
 sudo sh -c 'echo "<?php echo \"Terraform Tutorial \" . gethostname(); ?>" > /var/www/html/index.php'
 sudo sh -c 'echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php'
-sudo sh -c 'echo "${db_address}" > /var/www/important.pp'
+
+#
+# db 연동을 확인하기 위한 간단한 웹페이지 
+#
 
 # 웹 서버 기본 루트 페이지 수정을 하기 위해 /var/www 디렉토리의 소유권 및 권한을 변경
 sudo groupadd www
@@ -47,7 +53,7 @@ cd /var/www/html
 
 # samplepage.php 작성
 
-cat << EOF > samplepage.php
+cat << 'EOF' > samplepage.php
 <?php include "../inc/dbinfo.inc"; ?>
 
 <html>
@@ -60,25 +66,25 @@ cat << EOF > samplepage.php
 
  /* Connect to MySQL and select the database. */
 
-  \$connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
+  $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
 
   if(mysqli_connect_errno()) echo "Failed to connect to MySQL: " . mysqli_connect_error();
 
-   \$database = mysqli_select_db(\$connection, DB_DATABASE);
+   $database = mysqli_select_db($connection, DB_DATABASE);
 
   /* Ensure that the Employees table exists. */
 
-  VerifyEmployeesTable(\$connection, DB_DATABASE);
+  VerifyEmployeesTable($connection, DB_DATABASE);
 
   /* If input fields are populated, add a row to the Employees table. */
 
-  \$employee_name = htmlentities(\$_POST['Name']);
+  $employee_name = htmlentities($_POST['Name']);
 
-  \$employee_address = htmlentities(\$_POST['Address']);
+  $employee_address = htmlentities($_POST['Address']);
 
-   if(strlen(\$employee_name) || strlen(\$employee_address)) {
+   if(strlen($employee_name) || strlen($employee_address)) {
 
-    AddEmployee(\$connection, \$employee_name, \$employee_address);
+    AddEmployee($connection, $employee_name, $employee_address);
 
   }
 
@@ -86,7 +92,7 @@ cat << EOF > samplepage.php
 
 <!-- Input form -->
 
-<form action="<?PHP echo \$_SERVER['SCRIPT_NAME'] ?>" method="POST">
+<form action="<?PHP echo $_SERVER['SCRIPT_NAME'] ?>" method="POST">
 
   <table border="0">
 
@@ -140,17 +146,17 @@ cat << EOF > samplepage.php
 
 <?php
 
-\$result = mysqli_query(\$connection, "SELECT * FROM Employees");
+$result = mysqli_query($connection, "SELECT * FROM Employees");
 
-while(\$query_data = mysqli_fetch_row(\$result)) {
+while($query_data = mysqli_fetch_row($result)) {
 
   echo "<tr>";
 
-  echo "<td>",\$query_data[0], "</td>",
+  echo "<td>",$query_data[0], "</td>",
 
-       "<td>",\$query_data[1], "</td>",
+       "<td>",$query_data[1], "</td>",
 
-       "<td>",\$query_data[2], "</td>";
+       "<td>",$query_data[2], "</td>";
 
   echo "</tr>";
 
@@ -164,9 +170,9 @@ while(\$query_data = mysqli_fetch_row(\$result)) {
 
 <?php
 
-  mysqli_free_result(\$result);
+  mysqli_free_result($result);
 
-  mysqli_close(\$connection);
+  mysqli_close($connection);
 
 ?>
 
@@ -178,41 +184,41 @@ while(\$query_data = mysqli_fetch_row(\$result)) {
 
 /* Add an employee to the table. */
 
-function AddEmployee(\$connection, \$name, \$address) {
+function AddEmployee($connection, $name, $address) {
 
-   \$n = mysqli_real_escape_string(\$connection, \$name);
+   $n = mysqli_real_escape_string($connection, $name);
 
-   \$a = mysqli_real_escape_string(\$connection, \$address);
+   $a = mysqli_real_escape_string($connection, $address);
 
-   \$query = "INSERT INTO 'Employees'('Name', 'Address') VALUES('\$n', '\$a');";
+   $query = "INSERT INTO `Employees`(`Name`, `Address`) VALUES('$n', '$a');";
 
-   if(!mysqli_query(\$connection, \$query)) echo("<p>Error adding employee data.</p>");
+   if(!mysqli_query($connection, $query)) echo("<p>Error adding employee data.</p>");
 
 }
 
 /* Check whether the table exists and, if not, create it. */
 
-function VerifyEmployeesTable(\$connection, \$dbName) {
+function VerifyEmployeesTable($connection, $dbName) {
 
-  if(!TableExists("Employees", \$connection, \$dbName))
+  if(!TableExists("Employees", $connection, $dbName))
 
   {
 
-     \$query = "CREATE TABLE 'Employees'(
+     $query = "CREATE TABLE `Employees`(
 
-         'ID' int(11) NOT NULL AUTO_INCREMENT,
+         `ID` int(11) NOT NULL AUTO_INCREMENT,
 
-         'Name' varchar(45) DEFAULT NULL,
+         `Name` varchar(45) DEFAULT NULL,
 
-         'Address' varchar(90) DEFAULT NULL,
+         `Address` varchar(90) DEFAULT NULL,
 
-         PRIMARY KEY('ID'),
+         PRIMARY KEY(`ID`),
 
-         UNIQUE KEY 'ID_UNIQUE'('ID')
+         UNIQUE KEY `ID_UNIQUE`(`ID`)
 
       ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1";
 
-     if(!mysqli_query(\$connection, \$query)) echo("<p>Error creating table.</p>");
+     if(!mysqli_query($connection, $query)) echo("<p>Error creating table.</p>");
 
   }
 
@@ -220,19 +226,19 @@ function VerifyEmployeesTable(\$connection, \$dbName) {
 
 /* Check for the existence of a table. */
 
-function TableExists(\$tableName, \$connection, \$dbName) {
+function TableExists($tableName, $connection, $dbName) {
 
-  \$t = mysqli_real_escape_string(\$connection, \$tableName);
+  $t = mysqli_real_escape_string($connection, $tableName);
 
-  \$d = mysqli_real_escape_string(\$connection, \$dbName);
+  $d = mysqli_real_escape_string($connection, $dbName);
 
 
 
-  \$checktable = mysqli_query(\$connection,
+  $checktable = mysqli_query($connection,
 
-      "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = '\$t' AND TABLE_SCHEMA = '\$d'");
+      "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = '$t' AND TABLE_SCHEMA = '$d'");
 
-  if(mysqli_num_rows(\$checktable)> 0) return true;
+  if(mysqli_num_rows($checktable)> 0) return true;
 
   return false;
 

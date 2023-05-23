@@ -1,5 +1,6 @@
+# Aurora Mysql 
 resource "aws_rds_cluster" "mini-rds" {
-  cluster_identifier      = "mini-rds"  # 클러스터 식별자
+  cluster_identifier      = "mini-rds"
   engine                  = "aurora-mysql"
   engine_version          = "5.7.mysql_aurora.2.07.2"
   database_name           = "minirds"
@@ -11,13 +12,13 @@ resource "aws_rds_cluster" "mini-rds" {
   vpc_security_group_ids = var.rds-security-group-ids
 }
 
-# Aurora 리플리카 생성
+# Aurora Mysql 리플리카 
 resource "aws_rds_cluster_instance" "mini-rds-replica" {
-  count               = 2  # 리플리카 인스턴스 수
+  count               = 2  
   engine              = "aurora-mysql"
   identifier          = "mini-rds-replica-${count.index}"
   cluster_identifier  = aws_rds_cluster.mini-rds.id
-  instance_class      = "db.t3.small"  # 인스턴스 유형
+  instance_class      = "db.t3.small"  
 }
 
 
