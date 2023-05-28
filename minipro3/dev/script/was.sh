@@ -8,18 +8,9 @@ sudo tar xvzf apache-tomcat-9.0.75.tar.gz
 sudo mv apache-tomcat-9.0.75 /opt/tomcat
 sudo /opt/tomcat/bin/startup.sh
 
-# 로드밸런서 작동확인을 위한 간단한 웹페이지 작성
-sudo sh -c 'cat << EOF > /opt/tomcat/webapps/ROOT/test.jsp
-<%@ page language="java" %>
-<html>
-<head>
-    <title>MiniProject3</title>
-</head>
-<body>
-    <h1>MiniProject3_Tomcat <%= java.net.InetAddress.getLocalHost().getHostName() %></h1>
-</body>
-</html>
-EOF'
-
+# Tomcat에 간단한 웹페이지 전송
+cd /opt/tomcat/webapps
+sudo mv ROOT ROOT.bak
+sudo curl -o demo.war https://dl.tmpstorage.com/download/file/22bmc95fqs
 sudo /opt/tomcat/bin/shutdown.sh
 sudo /opt/tomcat/bin/startup.sh

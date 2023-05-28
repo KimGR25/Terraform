@@ -17,7 +17,7 @@ resource "aws_instance" "mini3_bastion_intence" {
 
 # Jenkins 서버 인스턴스 생성
 resource "aws_instance" "mini3_jenkins_intence" {
-  ami           = "ami-073858dcf4e30e586"
+  ami           = "ami-0e05f79e46019bfac"
   instance_type = "t3.small"
   key_name      = "mykeypair"
   subnet_id     = var.public_subnets_ids

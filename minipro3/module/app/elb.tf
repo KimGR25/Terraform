@@ -54,7 +54,7 @@ resource "aws_lb" "mini3_was_nlb" {
   internal           = true
   security_groups = var.was_nlb_security_group_ids
   subnets         = var.private_subnets_ids
-  load_balancer_type = "application"
+  load_balancer_type = "network"
   idle_timeout    = 300
 
   tags = merge(
