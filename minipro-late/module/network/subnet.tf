@@ -28,6 +28,21 @@ resource "aws_subnet" "mini3_private_subnets" {
   )
 }
 
+resource "aws_subnet" "mini3_data_subnets" {
+  count                   = 2
+  cidr_block              = replace(var.subnet_cidr_block, "x", 21 + count.index)
+  vpc_id                  = aws_vpc.mini3_vpc.id
+  availability_zone       = data.aws_availability_zones.azs.names[count.index]
+  map_public_ip_on_launch = false
+
+  tags = merge(
+    var.tags,
+    {
+      "Name" = "${var.environment} Data Subnet${count.index + 1}"
+    }
+  )
+}
+
 data "aws_availability_zones" "azs" {
   state = "available"
 
